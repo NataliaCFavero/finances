@@ -2,6 +2,8 @@ import 'package:finances/models/expense.dart';
 import 'package:finances/screens/new_expense.dart';
 import 'package:flutter/material.dart';
 
+const _titleAppBar = 'Despesas';
+
 class ListExpenses extends StatefulWidget {
   final List<Expense> _listExpense = List();
 
@@ -16,7 +18,7 @@ class ListExpensesState extends State<ListExpenses> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Despesas"),
+        title: Text(_titleAppBar),
       ),
       body: ListView.builder(
           itemCount: widget._listExpense.length,
@@ -28,7 +30,11 @@ class ListExpensesState extends State<ListExpenses> {
         onPressed: () {
           Future<Expense> future = Navigator.push(
               context, MaterialPageRoute(builder: (context) => NewExpense()));
-          future.then((expense) => widget._listExpense.add(expense));
+          future.then((expense) {
+            if (expense != null) {
+              widget._listExpense.add(expense);
+            }
+          });
         },
       ),
     );

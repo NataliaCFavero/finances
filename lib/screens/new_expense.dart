@@ -2,6 +2,11 @@ import 'package:finances/components/input_text.dart';
 import 'package:finances/models/expense.dart';
 import 'package:flutter/material.dart';
 
+const _titleAppBar = 'Nova Despesa';
+const _labelValue = 'Valor';
+const _hintValue = '00.00';
+const _buttonAdd = 'Adicionar';
+
 class NewExpense extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -16,18 +21,18 @@ class NewExpenseState extends State<NewExpense> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Nova Despesa'),
+        title: Text(_titleAppBar),
       ),
       body: Column(
         children: <Widget>[
           InputText(
             _controllerExpenseValue,
-            "Valor",
-            "00.00",
+            _labelValue,
+            _hintValue,
             icon: Icons.monetization_on,
           ),
           RaisedButton(
-            child: Text('Adicionar'),
+            child: Text(_buttonAdd),
             onPressed: () {
               createExpense(context);
             },
@@ -41,7 +46,8 @@ class NewExpenseState extends State<NewExpense> {
     final double value =
         double.tryParse(_controllerExpenseValue.text.toString());
 
-    final Expense expense = Expense(value, "iFood");
-    Navigator.pop(context, expense);
+    if (value != null) {
+      Navigator.pop(context, Expense(value, "iFood"));
+    }
   }
 }
