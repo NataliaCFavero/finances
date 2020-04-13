@@ -1,9 +1,13 @@
+import 'package:finances/screens/list_expense.dart';
 import 'package:flutter/material.dart';
 
-void main() => runApp(MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text("Gastos"),
-        ),
-      ),
-    ));
+void main() => runApp(FinancesApp());
+
+class FinancesApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: ListExpenses(),
+    );
+  }
+}
