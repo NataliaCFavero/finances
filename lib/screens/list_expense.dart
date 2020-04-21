@@ -28,16 +28,20 @@ class ListExpensesState extends State<ListExpenses> {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {
-          Future<Expense> future = Navigator.push(
-              context, MaterialPageRoute(builder: (context) => NewExpense()));
-          future.then((expense) {
-            if (expense != null) {
-              widget._listExpense.add(expense);
-            }
-          });
+          goToNewExpense(context);
         },
       ),
     );
+  }
+
+  void goToNewExpense(BuildContext context) {
+    Future<Expense> future = Navigator.push(
+        context, MaterialPageRoute(builder: (context) => NewExpense()));
+    future.then((expense) {
+      if (expense != null) {
+        widget._listExpense.add(expense);
+      }
+    });
   }
 }
 
@@ -52,10 +56,7 @@ class ItemExpenses extends StatelessWidget {
       child: ListTile(
         leading: Icon(Icons.monetization_on),
         title: Text(_expense.value.toString()),
-        subtitle: Chip(
-          backgroundColor: Colors.amber,
-          label: Text(_expense.category),
-        ),
+        subtitle: Text(_expense.category),
       ),
     );
   }
