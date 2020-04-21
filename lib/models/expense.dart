@@ -1,6 +1,8 @@
+import 'package:finances/models/expense_types.dart';
+
 class Expense {
   final double value;
-  final String category;
+  final ExpenseType category;
 
   Expense(this.value, this.category);
 

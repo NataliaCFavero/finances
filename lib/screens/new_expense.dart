@@ -50,11 +50,12 @@ class NewExpenseState extends State<NewExpense> {
   }
 
   void createExpense(BuildContext context) {
-    if (statefulWidget._character != null) {
+    if (statefulWidget._character != null &&
+        _controllerExpenseValue.numberValue > 0) {
       Navigator.pop(
           context,
-          Expense(_controllerExpenseValue.numberValue,
-              statefulWidget._character.description));
+          Expense(
+              _controllerExpenseValue.numberValue, statefulWidget._character));
     } else {
       _neverSatisfied();
     }
@@ -66,11 +67,11 @@ class NewExpenseState extends State<NewExpense> {
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Classificar Despesa'),
+          title: Text('Criar Despesa'),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text('Selecione o tipo da sua despesa.'),
+                Text('Insira um valor e selecione o tipo da sua despesa.'),
               ],
             ),
           ),
@@ -132,7 +133,6 @@ class _RadioListExpenseTypeWidgetState
 
   setSelectedType(ExpenseType type) {
     setState(() {
-      print(type.description);
       widget._character = type;
     });
   }
