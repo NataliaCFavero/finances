@@ -1,51 +1,100 @@
 import 'package:finances/models/expense.dart';
 import 'package:finances/models/expense_types.dart';
+import 'package:finances/presenter/list_expense_presenter.dart';
 import 'package:finances/screens/new_expense.dart';
+import 'package:finances/usecase/list_expense_use_case.dart';
 import 'package:flutter/material.dart';
-import 'package:charts_flutter/flutter.dart' as charts;
 
 import 'chart_expense.dart';
 
 const _titleAppBar = 'Despesas';
+const _btnChart = 'Ver Gráfico';
+
+abstract class ListExpenseView {
+  void onLoadExpenseList(List<Expense> expenseList) {}
+}
 
 class ListExpenses extends StatefulWidget {
-  final List<Expense> _listExpense = List();
-
   @override
   State<StatefulWidget> createState() {
     return ListExpensesState();
   }
-
 }
 
-class ListExpensesState extends State<ListExpenses> {
+class ListExpensesState extends State<ListExpenses> implements ListExpenseView {
+  ListExpenseUseCaseImpl _useCase;
+  ListExpensePresenterImpl _presenter;
+  List<Expense> _listExpense;
+
+  ListExpensesState() {
+    _presenter = ListExpensePresenterImpl(this);
+    _useCase = ListExpenseUseCaseImpl(_presenter);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _useCase.onLoadExpenseList();
+  }
+
+  @override
+  void onLoadExpenseList(List<Expense> expenseList) {
+    setState(() {
+      _listExpense = expenseList;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(_titleAppBar),
-      ),
-      body: _buildList(context),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () {
-          goToNewExpense(context);
-        },
-      ),
-    );
+    if (_listExpense == null) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(_titleAppBar),
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              CircularProgressIndicator(),
+              Text('Loading'),
+            ],
+          ),
+        ),
+        floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.add),
+          onPressed: () {
+            goToNewExpense(context);
+          },
+        ),
+      );
+    } else {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(_titleAppBar),
+        ),
+        body: _buildList(context),
+        floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.add),
+          onPressed: () {
+            goToNewExpense(context);
+          },
+        ),
+      );
+    }
   }
 
   Widget _buildList(BuildContext context) {
     return Column(children: [
       Expanded(
         child: ListView.builder(
-            itemCount: widget._listExpense.length,
+            itemCount: _listExpense.length,
             itemBuilder: (context, index) {
-              return ItemExpenses(widget._listExpense[index]);
+              return ItemExpenses(_listExpense[index]);
             }),
       ),
       FlatButton(
-        child: Text("Ver Gráfico"),
+        child: Text(_btnChart),
         textColor: Colors.blue,
         onPressed: () {
           goToGenerateChart(context);
@@ -59,20 +108,20 @@ class ListExpensesState extends State<ListExpenses> {
         context, MaterialPageRoute(builder: (context) => NewExpense()));
     future.then((expense) {
       if (expense != null) {
-        widget._listExpense.add(expense);
+        _listExpense.add(expense);
       }
     });
   }
 
   void goToGenerateChart(BuildContext context) {
-    Map<int, Chart> chart = groupListExpense(widget._listExpense);
+    Map<int, Chart> chart = groupListExpense(_listExpense);
     Future<Expense> future = Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => PieOutsideLabelChart.withSampleData(chart)));
     future.then((expense) {
       if (expense != null) {
-        widget._listExpense.add(expense);
+        _listExpense.add(expense);
       }
     });
   }

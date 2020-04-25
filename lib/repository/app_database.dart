@@ -43,21 +43,25 @@ Future<int> saveExpense(Expense expense) async {
 Future<List<Expense>> findAllExpense() async {
   return createDatabase().then((db) {
     return db.query('expenses').then((maps) {
-      final List<Expense> expenses = List();
-      for (Map<String, dynamic> map in maps) {
-        final Expense expense = Expense(
-          id: map['id'],
-          value: map['value'],
-          category: map['type_expense'],
-        );
-        expenses.add(expense);
-      }
-      return expenses;
-    });
+      return findAllExpenseType().then((types) {
+        final List<Expense> expenses = List();
+        for (Map<String, dynamic> map in maps) {
+          ExpenseType type =
+              types.firstWhere((type) => type.index == map['type_expense']);
+          final Expense expense = Expense(
+            id: map['id'],
+            value: map['value'],
+            category: type,
+          );
+          expenses.add(expense);
+        }
+        return expenses;
+      });
+    }).catchError((onError) => onError);
   });
 }
 
-Future<List<ExpenseType>> findAllExpenseType() {
+Future<List<ExpenseType>> findAllExpenseType() async {
   return createDatabase().then((db) {
     return db.query('type_expense').then((maps) {
       final List<ExpenseType> types = List();
