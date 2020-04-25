@@ -1,4 +1,4 @@
-import 'package:finances/components/input_text.dart';
+import 'package:finances/view/components/input_text.dart';
 import 'package:finances/models/expense.dart';
 import 'package:finances/models/expense_types.dart';
 import 'package:finances/presenter/new_expense_presenter.dart';

@@ -1,5 +1,5 @@
 import 'package:finances/models/expense.dart';
-import 'package:finances/screens/list_expense.dart';
+import 'package:finances/view/screens/list_expense.dart';
 
 abstract class ListExpensePresenter {
   void onLoadExpenseList(List<Expense> expenses) {}

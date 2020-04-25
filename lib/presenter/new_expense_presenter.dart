@@ -1,6 +1,6 @@
 import 'package:finances/models/expense.dart';
 import 'package:finances/models/expense_types.dart';
-import 'package:finances/screens/new_expense.dart';
+import 'package:finances/view/screens/new_expense.dart';
 
 abstract class NewExpensePresenter {
   void showListExpenseType(List<ExpenseType> listTypes) {}

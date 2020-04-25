@@ -1,7 +1,7 @@
 import 'package:finances/models/expense.dart';
 import 'package:finances/models/expense_types.dart';
 import 'package:finances/presenter/list_expense_presenter.dart';
-import 'package:finances/screens/new_expense.dart';
+import 'package:finances/view/screens/new_expense.dart';
 import 'package:finances/usecase/list_expense_use_case.dart';
 import 'package:flutter/material.dart';
 

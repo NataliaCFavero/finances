@@ -1,4 +1,4 @@
-import 'package:finances/screens/list_expense.dart';
+import 'package:finances/view/screens/list_expense.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(FinancesApp());
@@ -16,6 +16,5 @@ class FinancesApp extends StatelessWidget {
               textTheme: ButtonTextTheme.accent)),
       home: ListExpenses(),
     );
-
   }
 }
