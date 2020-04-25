@@ -16,5 +16,6 @@ class FinancesApp extends StatelessWidget {
               textTheme: ButtonTextTheme.accent)),
       home: ListExpenses(),
     );
+
   }
 }

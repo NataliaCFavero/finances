@@ -1,6 +1,8 @@
 import 'package:finances/components/input_text.dart';
 import 'package:finances/models/expense.dart';
 import 'package:finances/models/expense_types.dart';
+import 'package:finances/presenter/new_expense_presenter.dart';
+import 'package:finances/usecase/new_expense_use_case.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 
@@ -8,6 +10,15 @@ const _titleAppBar = 'Nova Despesa';
 const _labelValue = 'Valor';
 const _hintValue = '00.00';
 const _buttonAdd = 'Adicionar';
+const _labelCreateExpense = 'Criar Despesa';
+const _labelMsgError = 'Insira um valor e selecione o tipo da sua despesa.';
+const _labelBtnError = 'Ok';
+
+class NewExpenseView {
+  void finishScreen(Expense expense) {}
+
+  void showErrorToCreateExpense() {}
+}
 
 class NewExpense extends StatefulWidget {
   @override
@@ -16,10 +27,21 @@ class NewExpense extends StatefulWidget {
   }
 }
 
-class NewExpenseState extends State<NewExpense> {
+class NewExpenseState extends State<NewExpense> implements NewExpenseView {
+
   final MoneyMaskedTextController _controllerExpenseValue =
       MoneyMaskedTextController(decimalSeparator: ',', thousandSeparator: '.');
+
   RadioListExpenseTypeWidget statefulWidget = RadioListExpenseTypeWidget();
+
+  NewExpenseUseCaseImpl _useCaseImpl;
+  NewExpensePresenterImpl _presenterImpl;
+
+  NewExpenseState() {
+    this._presenterImpl = NewExpensePresenterImpl(this);
+    this._useCaseImpl = NewExpenseUseCaseImpl(presenter: _presenterImpl);
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +58,13 @@ class NewExpenseState extends State<NewExpense> {
               _hintValue,
               icon: Icons.monetization_on,
             ),
-            statefulWidget,
+            FutureBuilder<List<ExpenseType>>(
+                initialData: List(),
+                future: _useCaseImpl.getListExpenseType(),
+                builder: (context, snapshot) {
+                  final List<ExpenseType> types = snapshot.data;
+                  return RadioListExpenseTypeWidget(list: types);
+                }),
             RaisedButton(
               child: Text(_buttonAdd),
               onPressed: () {
@@ -50,34 +78,31 @@ class NewExpenseState extends State<NewExpense> {
   }
 
   void createExpense(BuildContext context) {
-    if (statefulWidget._character != null &&
-        _controllerExpenseValue.numberValue > 0) {
-      Navigator.pop(
-          context,
-          Expense(
-              _controllerExpenseValue.numberValue, statefulWidget._character));
-    } else {
-      _neverSatisfied();
-    }
+    _useCaseImpl.createExpense(
+        _controllerExpenseValue.numberValue, statefulWidget._category);
   }
 
-  Future<void> _neverSatisfied() async {
+  void finishScreen(Expense expense) {
+    Navigator.pop(context, expense);
+  }
+
+  Future<void> showErrorToCreateExpense() async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Criar Despesa'),
+          title: Text(_labelCreateExpense),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text('Insira um valor e selecione o tipo da sua despesa.'),
+                Text(_labelMsgError),
               ],
             ),
           ),
           actions: <Widget>[
             FlatButton(
-              child: Text('Ok'),
+              child: Text(_labelBtnError),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -89,14 +114,11 @@ class NewExpenseState extends State<NewExpense> {
   }
 }
 
-enum SingingCharacter { lafayette, jefferson }
-
 class RadioListExpenseTypeWidget extends StatefulWidget {
-  RadioListExpenseTypeWidget({Key key}) : super(key: key);
+  ExpenseType _category;
+  final List<ExpenseType> list;
 
-  List<ExpenseType> expenseTypeList = ExpenseType().newList();
-  List<Widget> widgetsList = [];
-  ExpenseType _character;
+  RadioListExpenseTypeWidget({Key key, this.list}) : super(key: key);
 
   @override
   _RadioListExpenseTypeWidgetState createState() =>
@@ -108,13 +130,13 @@ class _RadioListExpenseTypeWidgetState
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: createList(),
+      children: createList(widget.list),
     );
   }
 
-  List<RadioListTile> createList() {
+  List<RadioListTile> createList(List<ExpenseType> types) {
     List<RadioListTile> listTile = [];
-    for (ExpenseType type in widget.expenseTypeList) {
+    for (ExpenseType type in types) {
       listTile.add(createRadioList(type));
     }
     return listTile;
@@ -124,7 +146,7 @@ class _RadioListExpenseTypeWidgetState
     return RadioListTile<ExpenseType>(
       title: Text(expenseType.description),
       value: expenseType,
-      groupValue: widget._character,
+      groupValue: widget._category,
       onChanged: (ExpenseType value) {
         setSelectedType(value);
       },
@@ -133,7 +155,7 @@ class _RadioListExpenseTypeWidgetState
 
   setSelectedType(ExpenseType type) {
     setState(() {
-      widget._character = type;
+      widget._category = type;
     });
   }
 }

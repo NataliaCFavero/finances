@@ -1,6 +1,5 @@
 /// Simple pie chart with outside labels example.
 import 'package:charts_flutter/flutter.dart' as charts;
-import 'package:finances/models/expense.dart';
 import 'package:finances/screens/list_expense.dart';
 import 'package:flutter/material.dart';
 

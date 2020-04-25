@@ -1,2 +1,7 @@
 build/
 *.lock
+*.idea/
+*.packages
+*.dart_tool/
+*.flutter-plugins
+*.flutter-plugins-dependencies
