@@ -31,7 +31,7 @@ Future<int> saveExpenseType(ExpenseType type) {
   });
 }
 
-Future<int> saveExpense(Expense expense) {
+Future<int> saveExpense(Expense expense) async {
   return createDatabase().then((db) {
     final Map<String, dynamic> expenseMap = Map();
     expenseMap['value'] = expense.value;
@@ -40,7 +40,7 @@ Future<int> saveExpense(Expense expense) {
   });
 }
 
-Future<List<Expense>> findAllExpense() {
+Future<List<Expense>> findAllExpense() async {
   return createDatabase().then((db) {
     return db.query('expenses').then((maps) {
       final List<Expense> expenses = List();

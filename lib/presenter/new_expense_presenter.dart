@@ -5,9 +5,11 @@ import 'package:finances/screens/new_expense.dart';
 abstract class NewExpensePresenter {
   void showListExpenseType(List<ExpenseType> listTypes) {}
 
+  void onErrorExpenseTypeList() {}
+
   void successSaveExpense(Expense expense) {}
 
-  void showErrorToCreateExpense() {}
+  void onErrorToCreateExpense() {}
 }
 
 class NewExpensePresenterImpl implements NewExpensePresenter {
@@ -15,14 +17,22 @@ class NewExpensePresenterImpl implements NewExpensePresenter {
 
   NewExpensePresenterImpl(this._view);
 
-  void showListExpenseType(List<ExpenseType> listTypes) {}
+  void showListExpenseType(List<ExpenseType> listTypes) {
+    _view.onLoadExpenseTypeList(listTypes);
+  }
+
+  @override
+  void onErrorExpenseTypeList() {
+    _view.onErrorExpenseTypeList();
+  }
 
   @override
   void successSaveExpense(Expense expense) {
     _view.finishScreen(expense);
   }
 
-  void showErrorToCreateExpense() {
+  @override
+  void onErrorToCreateExpense() {
     _view.showErrorToCreateExpense();
   }
 }

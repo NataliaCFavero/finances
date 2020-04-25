@@ -17,6 +17,10 @@ const _labelBtnError = 'Ok';
 class NewExpenseView {
   void finishScreen(Expense expense) {}
 
+  void onLoadExpenseTypeList(List<ExpenseType> typesList) {}
+
+  void onErrorExpenseTypeList() {}
+
   void showErrorToCreateExpense() {}
 }
 
@@ -28,58 +32,41 @@ class NewExpense extends StatefulWidget {
 }
 
 class NewExpenseState extends State<NewExpense> implements NewExpenseView {
-
   final MoneyMaskedTextController _controllerExpenseValue =
       MoneyMaskedTextController(decimalSeparator: ',', thousandSeparator: '.');
 
-  RadioListExpenseTypeWidget statefulWidget = RadioListExpenseTypeWidget();
-
+  RadioListExpenseTypeWidget _statefulWidget;
   NewExpenseUseCaseImpl _useCaseImpl;
   NewExpensePresenterImpl _presenterImpl;
+  List<ExpenseType> _typesList;
 
   NewExpenseState() {
     this._presenterImpl = NewExpensePresenterImpl(this);
     this._useCaseImpl = NewExpenseUseCaseImpl(presenter: _presenterImpl);
   }
 
+  @override
+  void initState() {
+    super.initState();
+    _useCaseImpl.getListExpenseType();
+  }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(_titleAppBar),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            InputText(
-              _controllerExpenseValue,
-              _labelValue,
-              _hintValue,
-              icon: Icons.monetization_on,
-            ),
-            FutureBuilder<List<ExpenseType>>(
-                initialData: List(),
-                future: _useCaseImpl.getListExpenseType(),
-                builder: (context, snapshot) {
-                  final List<ExpenseType> types = snapshot.data;
-                  return RadioListExpenseTypeWidget(list: types);
-                }),
-            RaisedButton(
-              child: Text(_buttonAdd),
-              onPressed: () {
-                createExpense(context);
-              },
-            ),
-          ],
-        ),
-      ),
-    );
+  void onLoadExpenseTypeList(List<ExpenseType> typesList) {
+    setState(() {
+      _typesList = typesList;
+      _statefulWidget = RadioListExpenseTypeWidget(list: _typesList);
+    });
+  }
+
+  @override
+  void onErrorExpenseTypeList() {
+    print('Error');
   }
 
   void createExpense(BuildContext context) {
     _useCaseImpl.createExpense(
-        _controllerExpenseValue.numberValue, statefulWidget._category);
+        _controllerExpenseValue.numberValue, _statefulWidget._category);
   }
 
   void finishScreen(Expense expense) {
@@ -111,6 +98,41 @@ class NewExpenseState extends State<NewExpense> implements NewExpenseView {
         );
       },
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_statefulWidget == null) {
+      return Center(
+          child: Padding(
+              padding: EdgeInsets.only(left: 16.0, right: 16.0),
+              child: CircularProgressIndicator()));
+    } else {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(_titleAppBar),
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              InputText(
+                _controllerExpenseValue,
+                _labelValue,
+                _hintValue,
+                icon: Icons.monetization_on,
+              ),
+              _statefulWidget,
+              RaisedButton(
+                child: Text(_buttonAdd),
+                onPressed: () {
+                  createExpense(context);
+                },
+              ),
+            ],
+          ),
+        ),
+      );
+    }
   }
 }
 
