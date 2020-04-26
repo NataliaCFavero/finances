@@ -1,14 +1,17 @@
+import 'package:charts_flutter/flutter.dart';
 import 'package:finances/models/expense.dart';
 import 'package:finances/models/expense_types.dart';
 import 'package:finances/presenter/list_expense_presenter.dart';
-import 'package:finances/view/screens/new_expense.dart';
 import 'package:finances/usecase/list_expense_use_case.dart';
+import 'package:finances/view/components/color_convert.dart';
+import 'package:finances/view/screens/new_expense.dart';
 import 'package:flutter/material.dart';
 
 import 'chart_expense.dart';
 
 const _titleAppBar = 'Despesas';
 const _btnChart = 'Ver Gráfico';
+const _txtLoading = 'Loading';
 
 abstract class ListExpenseView {
   void onLoadExpenseList(List<Expense> expenseList) {}
@@ -57,7 +60,7 @@ class ListExpensesState extends State<ListExpenses> implements ListExpenseView {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               CircularProgressIndicator(),
-              Text('Loading'),
+              Text(_txtLoading),
             ],
           ),
         ),
@@ -139,7 +142,8 @@ class ListExpensesState extends State<ListExpenses> implements ListExpenseView {
       double total = 0;
       list.forEach((f) => total += f.value);
 
-      chartCategory = Chart(total, expense.category);
+      chartCategory = Chart(
+          total, expense.category, Color.fromHex(code: expense.category.color));
       mapList.putIfAbsent(expense.category.index, () => chartCategory);
     }
 
@@ -151,8 +155,9 @@ class ListExpensesState extends State<ListExpenses> implements ListExpenseView {
 class Chart {
   double total;
   ExpenseType description;
+  Color color;
 
-  Chart(this.total, this.description);
+  Chart(this.total, this.description, this.color);
 }
 
 class ItemExpenses extends StatelessWidget {
@@ -164,7 +169,8 @@ class ItemExpenses extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
-        leading: Icon(Icons.monetization_on),
+        leading: Icon(Icons.monetization_on,
+            color: HexColor(_expense.category.color)),
         title: Text(_expense.value.toString()),
         subtitle: Text(_expense.category.description),
       ),

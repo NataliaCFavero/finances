@@ -7,12 +7,12 @@ class ExpenseType {
 
   List<ExpenseType> newList() {
     return [
-      ExpenseType(index: 1, description: "iFood", color: "vermelho"),
-      ExpenseType(index: 2, description: "Restaurante", color: "amarelo"),
-      ExpenseType(index: 3, description: "Netflix", color: "preto"),
-      ExpenseType(index: 4, description: "Uber", color: "cinza"),
-      ExpenseType(index: 5, description: "Supermercado", color: "laranja"),
-      ExpenseType(index: 6, description: "Roupas", color: "azul"),
+      ExpenseType(index: 1, description: "iFood", color: "#d50000"),
+      ExpenseType(index: 2, description: "Restaurante", color: "#ffd600"),
+      ExpenseType(index: 3, description: "Netflix", color: "#212121"),
+      ExpenseType(index: 4, description: "Uber", color: "#616161"),
+      ExpenseType(index: 5, description: "Supermercado", color: "#ff6d00"),
+      ExpenseType(index: 6, description: "Roupas", color: "#304ffe"),
     ];
   }
 }

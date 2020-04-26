@@ -57,6 +57,7 @@ class PieOutsideLabelChart extends StatelessWidget {
         id: 'Sales',
         domainFn: (Chart typeExpense, _) => typeExpense.description.index,
         measureFn: (Chart typeExpense, _) => typeExpense.total,
+        colorFn: (Chart typeExpense, _) => typeExpense.color,
         data: chartsList,
         // Set a label accessor to control the text of the arc label.
         labelAccessorFn: (Chart row, _) => '${row.description.description}',
