@@ -1,3 +1,4 @@
+import 'package:finances/view/extensions/color_extension.dart';
 import 'package:flutter/material.dart';
 
 class InputText extends StatelessWidget {
@@ -15,7 +16,12 @@ class InputText extends StatelessWidget {
       child: TextField(
         controller: controller,
         decoration: InputDecoration(
-            icon: this.icon != null ? Icon(this.icon) : null,
+            icon: this.icon != null
+                ? Icon(
+                    this.icon,
+                    color: Colors.blueGrey,
+                  )
+                : null,
             labelText: labelText,
             hintText: hintText),
         keyboardType: TextInputType.number,

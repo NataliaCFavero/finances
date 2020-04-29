@@ -9,11 +9,11 @@ class FinancesApp extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(
           primaryColor: Color(0xFF0336FF),
-          accentColor: Color(0xFFFFDE03),
+          accentColor: Colors.blueGrey,
           buttonTheme: ButtonThemeData(
-              buttonColor: Colors.blue,
+              buttonColor: Colors.blueGrey,
               shape: RoundedRectangleBorder(),
-              textTheme: ButtonTextTheme.accent)),
+              textTheme: ButtonTextTheme.primary)),
       home: ListExpenses(),
     );
   }

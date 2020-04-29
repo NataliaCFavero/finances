@@ -122,11 +122,18 @@ class NewExpenseState extends State<NewExpense> implements NewExpenseView {
                 icon: Icons.monetization_on,
               ),
               _statefulWidget,
-              RaisedButton(
-                child: Text(_buttonAdd),
-                onPressed: () {
-                  createExpense(context);
-                },
+              Padding(
+                padding: const EdgeInsets.all(8),
+                child: SizedBox(
+                  width: double.maxFinite,
+                  height: 38,
+                  child: RaisedButton(
+                    child: Text(_buttonAdd),
+                    onPressed: () {
+                      createExpense(context);
+                    },
+                  ),
+                ),
               ),
             ],
           ),
