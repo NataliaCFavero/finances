@@ -3,7 +3,7 @@ import 'package:finances/models/expense_types.dart';
 class Expense {
   final int id;
   final double value;
-  final ExpenseType category;
+  final Category category;
 
   Expense({this.id, this.value, this.category});
 

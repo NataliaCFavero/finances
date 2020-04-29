@@ -17,9 +17,9 @@ const _labelBtnError = 'Ok';
 class NewExpenseView {
   void finishScreen(Expense expense) {}
 
-  void onLoadExpenseTypeList(List<ExpenseType> typesList) {}
+  void onLoadCategoriesList(List<Category> categories) {}
 
-  void onErrorExpenseTypeList() {}
+  void onErrorCategoriesList() {}
 
   void showErrorToCreateExpense() {}
 }
@@ -35,10 +35,10 @@ class NewExpenseState extends State<NewExpense> implements NewExpenseView {
   final MoneyMaskedTextController _controllerExpenseValue =
       MoneyMaskedTextController(decimalSeparator: ',', thousandSeparator: '.');
 
-  RadioListExpenseTypeWidget _statefulWidget;
+  RadioListCategoryWidget _statefulWidget;
   NewExpenseUseCaseImpl _useCaseImpl;
   NewExpensePresenterImpl _presenterImpl;
-  List<ExpenseType> _typesList;
+  List<Category> _typesList;
 
   NewExpenseState() {
     this._presenterImpl = NewExpensePresenterImpl(this);
@@ -48,19 +48,19 @@ class NewExpenseState extends State<NewExpense> implements NewExpenseView {
   @override
   void initState() {
     super.initState();
-    _useCaseImpl.getListExpenseType();
+    _useCaseImpl.getListCategories();
   }
 
   @override
-  void onLoadExpenseTypeList(List<ExpenseType> typesList) {
+  void onLoadCategoriesList(List<Category> typesList) {
     setState(() {
       _typesList = typesList;
-      _statefulWidget = RadioListExpenseTypeWidget(list: _typesList);
+      _statefulWidget = RadioListCategoryWidget(list: _typesList);
     });
   }
 
   @override
-  void onErrorExpenseTypeList() {
+  void onErrorCategoriesList() {
     print('Error');
   }
 
@@ -136,19 +136,18 @@ class NewExpenseState extends State<NewExpense> implements NewExpenseView {
   }
 }
 
-class RadioListExpenseTypeWidget extends StatefulWidget {
-  ExpenseType _category;
-  final List<ExpenseType> list;
+class RadioListCategoryWidget extends StatefulWidget {
+  Category _category;
+  final List<Category> list;
 
-  RadioListExpenseTypeWidget({Key key, this.list}) : super(key: key);
+  RadioListCategoryWidget({Key key, this.list}) : super(key: key);
 
   @override
-  _RadioListExpenseTypeWidgetState createState() =>
-      _RadioListExpenseTypeWidgetState();
+  _RadioListCategoryWidgetState createState() =>
+      _RadioListCategoryWidgetState();
 }
 
-class _RadioListExpenseTypeWidgetState
-    extends State<RadioListExpenseTypeWidget> {
+class _RadioListCategoryWidgetState extends State<RadioListCategoryWidget> {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -156,26 +155,26 @@ class _RadioListExpenseTypeWidgetState
     );
   }
 
-  List<RadioListTile> createList(List<ExpenseType> types) {
+  List<RadioListTile> createList(List<Category> categories) {
     List<RadioListTile> listTile = [];
-    for (ExpenseType type in types) {
-      listTile.add(createRadioList(type));
+    for (Category category in categories) {
+      listTile.add(createRadioList(category));
     }
     return listTile;
   }
 
-  RadioListTile createRadioList(ExpenseType expenseType) {
-    return RadioListTile<ExpenseType>(
-      title: Text(expenseType.description),
-      value: expenseType,
+  RadioListTile createRadioList(Category category) {
+    return RadioListTile<Category>(
+      title: Text(category.description),
+      value: category,
       groupValue: widget._category,
-      onChanged: (ExpenseType value) {
+      onChanged: (Category value) {
         setSelectedType(value);
       },
     );
   }
 
-  setSelectedType(ExpenseType type) {
+  setSelectedType(Category type) {
     setState(() {
       widget._category = type;
     });

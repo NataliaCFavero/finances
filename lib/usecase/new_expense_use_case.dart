@@ -2,48 +2,55 @@ import 'package:finances/models/expense.dart';
 import 'package:finances/models/expense_types.dart';
 import 'package:finances/presenter/new_expense_presenter.dart';
 import 'package:finances/repository/app_database.dart';
+import 'package:finances/repository/category_dao.dart';
+import 'package:finances/repository/expense_dao.dart';
 
 class NewExpenseUseCase {
-  void getListExpenseType() {}
+  void getListCategories() {}
 
-  void createExpense(double value, ExpenseType category) {}
+  void createExpense(double value, Category category) {}
 }
 
 class NewExpenseUseCaseImpl implements NewExpenseUseCase {
   NewExpensePresenterImpl presenter;
+  CategoryDao _categoryDao;
+  ExpenseDao _expenseDao;
 
-  NewExpenseUseCaseImpl({this.presenter});
+  NewExpenseUseCaseImpl({this.presenter}) {
+    _categoryDao = CategoryDao();
+    _expenseDao = ExpenseDao();
+  }
 
-  void getListExpenseType() {
-    findAllExpenseType().then((types) {
-      if (types.length < 1) {
-        types = _createListExpenseTypeOnDb();
+  void getListCategories() {
+    _categoryDao.findAllCategories().then((categories) {
+      if (categories.length < 1) {
+        categories = _createListExpenseTypeOnDb();
       }
-      presenter.showListExpenseType(types);
+      presenter.showListCategories(categories);
     }).catchError((onError) {
       print(onError);
-      presenter.onErrorExpenseTypeList();
+      presenter.onErrorCategoriesList();
     });
   }
 
-  void createExpense(double value, ExpenseType category) {
+  void createExpense(double value, Category category) {
     if (category != null && value > 0) {
       Expense expense = Expense(value: value, category: category);
-      saveExpense(expense).then((id) {
+      _expenseDao.saveExpense(expense).then((id) {
         presenter.successSaveExpense(expense);
       }).catchError((onError) {
-        presenter.onErrorExpenseTypeList();
+        presenter.onErrorCategoriesList();
       });
     } else {
       presenter.onErrorToCreateExpense();
     }
   }
 
-  List<ExpenseType> _createListExpenseTypeOnDb() {
-    List<ExpenseType> expenseType = ExpenseType().newList();
-    for (ExpenseType type in expenseType) {
-      saveExpenseType(type);
+  List<Category> _createListExpenseTypeOnDb() {
+    List<Category> categories = Category().newList();
+    for (Category category in categories) {
+      _categoryDao.saveExpenseType(category);
     }
-    return expenseType;
+    return categories;
   }
 }

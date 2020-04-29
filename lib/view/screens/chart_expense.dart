@@ -1,5 +1,6 @@
 /// Simple pie chart with outside labels example.
 import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:finances/models/chart.dart';
 import 'package:finances/view/screens/list_expense.dart';
 import 'package:flutter/material.dart';
 
@@ -10,7 +11,7 @@ class PieOutsideLabelChart extends StatelessWidget {
   PieOutsideLabelChart(this.seriesList, {this.animate});
 
   /// Creates a [PieChart] with sample data and no transition.
-  factory PieOutsideLabelChart.withSampleData(Map<int, Chart> chartExpense) {
+  factory PieOutsideLabelChart.withSampleData(Map<int, ChartCategory> chartExpense) {
     return new PieOutsideLabelChart(
       _createSampleData(chartExpense),
       // Disable animations for image tests.
@@ -48,25 +49,25 @@ class PieOutsideLabelChart extends StatelessWidget {
   }
 
   /// Create one series with sample hard coded data.
-  static List<charts.Series<Chart, int>> _createSampleData(
-      Map<int, Chart> chartExpense) {
-    List<Chart> chartsList = convertList(chartExpense);
+  static List<charts.Series<ChartCategory, int>> _createSampleData(
+      Map<int, ChartCategory> chartExpense) {
+    List<ChartCategory> chartsList = convertList(chartExpense);
 
     return [
-      new charts.Series<Chart, int>(
+      new charts.Series<ChartCategory, int>(
         id: 'Sales',
-        domainFn: (Chart typeExpense, _) => typeExpense.description.index,
-        measureFn: (Chart typeExpense, _) => typeExpense.total,
-        colorFn: (Chart typeExpense, _) => typeExpense.color,
+        domainFn: (ChartCategory typeExpense, _) => typeExpense.description.index,
+        measureFn: (ChartCategory typeExpense, _) => typeExpense.total,
+        colorFn: (ChartCategory typeExpense, _) => typeExpense.color,
         data: chartsList,
         // Set a label accessor to control the text of the arc label.
-        labelAccessorFn: (Chart row, _) => '${row.description.description}',
+        labelAccessorFn: (ChartCategory row, _) => '${row.description.description}',
       )
     ];
   }
 
-  static List<Chart> convertList(Map<int, Chart> chartExpense) {
-    List<Chart> chart = [];
+  static List<ChartCategory> convertList(Map<int, ChartCategory> chartExpense) {
+    List<ChartCategory> chart = [];
     chartExpense.forEach((key, value) => chart.add(value));
     return chart;
   }

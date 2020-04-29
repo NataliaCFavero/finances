@@ -1,4 +1,5 @@
 import 'package:charts_flutter/flutter.dart';
+import 'package:finances/models/chart.dart';
 import 'package:finances/models/expense.dart';
 import 'package:finances/models/expense_types.dart';
 import 'package:finances/presenter/list_expense_presenter.dart';
@@ -15,6 +16,8 @@ const _txtLoading = 'Loading';
 
 abstract class ListExpenseView {
   void onLoadExpenseList(List<Expense> expenseList) {}
+
+  void onLoadChart(Map<int, ChartCategory> mapList) {}
 }
 
 class ListExpenses extends StatefulWidget {
@@ -45,6 +48,15 @@ class ListExpensesState extends State<ListExpenses> implements ListExpenseView {
     setState(() {
       _listExpense = expenseList;
     });
+  }
+
+  @override
+  void onLoadChart(Map<int, ChartCategory> mapList) {
+    Future<Expense> future = Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                PieOutsideLabelChart.withSampleData(mapList)));
   }
 
   @override
@@ -100,7 +112,7 @@ class ListExpensesState extends State<ListExpenses> implements ListExpenseView {
         child: Text(_btnChart),
         textColor: Colors.blue,
         onPressed: () {
-          goToGenerateChart(context);
+          goToGenerateChart();
         },
       )
     ]);
@@ -116,48 +128,9 @@ class ListExpensesState extends State<ListExpenses> implements ListExpenseView {
     });
   }
 
-  void goToGenerateChart(BuildContext context) {
-    Map<int, Chart> chart = groupListExpense(_listExpense);
-    Future<Expense> future = Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => PieOutsideLabelChart.withSampleData(chart)));
-    future.then((expense) {
-      if (expense != null) {
-        _listExpense.add(expense);
-      }
-    });
+  void goToGenerateChart() {
+    _useCase.groupListExpense(_listExpense);
   }
-
-  Map<int, Chart> groupListExpense(List<Expense> listExpense) {
-    Chart chartCategory;
-
-    Map<int, Chart> mapList = Map<int, Chart>();
-
-    for (Expense expense in listExpense) {
-      List<Expense> list = listExpense
-          .where((f) => f.category.index == expense.category.index)
-          .toList();
-
-      double total = 0;
-      list.forEach((f) => total += f.value);
-
-      chartCategory = Chart(
-          total, expense.category, Color.fromHex(code: expense.category.color));
-      mapList.putIfAbsent(expense.category.index, () => chartCategory);
-    }
-
-    mapList.forEach((f, v) => print(v.total));
-    return mapList;
-  }
-}
-
-class Chart {
-  double total;
-  ExpenseType description;
-  Color color;
-
-  Chart(this.total, this.description, this.color);
 }
 
 class ItemExpenses extends StatelessWidget {

@@ -3,9 +3,9 @@ import 'package:finances/models/expense_types.dart';
 import 'package:finances/view/screens/new_expense.dart';
 
 abstract class NewExpensePresenter {
-  void showListExpenseType(List<ExpenseType> listTypes) {}
+  void showListCategories(List<Category> listTypes) {}
 
-  void onErrorExpenseTypeList() {}
+  void onErrorCategoriesList() {}
 
   void successSaveExpense(Expense expense) {}
 
@@ -17,13 +17,13 @@ class NewExpensePresenterImpl implements NewExpensePresenter {
 
   NewExpensePresenterImpl(this._view);
 
-  void showListExpenseType(List<ExpenseType> listTypes) {
-    _view.onLoadExpenseTypeList(listTypes);
+  void showListCategories(List<Category> listTypes) {
+    _view.onLoadCategoriesList(listTypes);
   }
 
   @override
-  void onErrorExpenseTypeList() {
-    _view.onErrorExpenseTypeList();
+  void onErrorCategoriesList() {
+    _view.onErrorCategoriesList();
   }
 
   @override
